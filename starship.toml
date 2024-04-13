@@ -1,0 +1,28 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+[java]
+format = '\[[$symbol($version)]($style)\]'
+symbol = ' '
+
+[kubernetes]
+format = 'on [⛵ ($user on )($cluster in )$context \($namespace\)](dimmed green) '
+disabled = false
+contexts = [
+  { context_pattern = "dev.local.cluster.k8s", style = "green", symbol = "💔 " },
+]
+
+[kubernetes.context_aliases]
+"gke_(?P<project>[\\w-]+)_(?P<location>[\\w-]+)_(?P<cluster>[\\w-]+)" = "gke/$project/$cluster"
+
+[terraform]
+format = '[🏎💨 $version$workspace]($style) '
+
+[sudo]
+style = 'bold green'
+symbol = '☠️  '
+disabled = false
+
