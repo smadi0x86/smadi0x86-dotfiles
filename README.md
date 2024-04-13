@@ -1,4 +1,4 @@
-# Debian System Configuration - smadi0x86
+# smadi0x86 Debian System Configuration
 
 This repository contains scripts and configurations for setting up a Debian-based system.
 
