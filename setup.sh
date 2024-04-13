@@ -57,6 +57,21 @@ echo "Setting Fish as default shell..."
 sudo chsh -s /usr/bin/fish $(whoami)
 echo "Fish set as default shell"
 
+# Install Fisher and plugins for Fish shell
+echo "Installing Fisher and plugins for Fish shell..."
+curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+fisher install edc/bass
+echo "Fisher and plugins installed"
+
+# Create and configure nvm.fish for Fish shell
+echo "Creating and configuring nvm.fish..."
+sudo nano ~/.config/fish/functions/nvm.fish
+# Add the following code to the file nvm.fish
+echo "function nvm" > ~/.config/fish/functions/nvm.fish
+echo "    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv" >> ~/.config/fish/functions/nvm.fish
+echo "end" >> ~/.config/fish/functions/nvm.fish
+echo "nvm.fish created and configured"
+
 # Install Starship
 echo "Installing Starship..."
 curl -fsSL https://starship.rs/install.sh | sh
@@ -69,4 +84,14 @@ echo "# ~/.config/fish/config.fish" >> ~/.config/fish/config.fish
 echo "starship init fish | source" >> ~/.config/fish/config.fish
 echo "Fish configured with Starship"
 
+# Copy files from smadi0x86-setup to appropriate directories
+echo "Copying files to appropriate directories..."
+cp ~/smadi0x86-setup/.bashrc ~/
+cp ~/smadi0x86-setup/.gitconfig ~/
+cp ~/smadi0x86-setup/.tmux.conf ~/
+cp ~/smadi0x86-setup/.config/starship.toml ~/.config/
+cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
+echo "Files copied"
+
 echo "Setup complete!"
+
