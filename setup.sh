@@ -93,5 +93,7 @@ cp ~/smadi0x86-setup/.config/starship.toml ~/.config/
 cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
 echo "Files copied"
 
+echo "Don't forget to install and add the font: https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFont-SemiBold.ttf"
+
 echo "Setup complete!"
 
