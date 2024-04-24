@@ -1,77 +1,94 @@
--- Load essential lspconfig settings from nvchad
-local on_attach = require("nvchad.configs.lspconfig").on_attach
-local on_init = require("nvchad.configs.lspconfig").on_init
-local capabilities = require("nvchad.configs.lspconfig").capabilities
+local M = {}
+local map = vim.keymap.set
+local conf = require("nvconfig").ui.lsp
 
-local lspconfig = require "lspconfig"
+-- export on_attach & capabilities
+M.on_attach = function(client, bufnr)
+  local function opts(desc)
+    return { buffer = bufnr, desc = "LSP " .. desc }
+  end
 
--- List of language servers
-local servers = {
-    "lua_ls",       -- Lua Language Server
-    "gopls",        -- Language Server for Go
-    "rust_analyzer",-- Language Server for Rust
-    "terraformls",  -- Language Server for Terraform
-    "dockerls",     -- Language Server for Dockerfile
-    "yamlls",       -- Language Server for YAML
-    "jsonls",       -- Language Server for JSON
-    "bashls",       -- Language Server for Bash
-    "pyright",      -- Language Server for Python
-}
+  map("n", "gD", vim.lsp.buf.declaration, opts "Go to declaration")
+  map("n", "gd", vim.lsp.buf.definition, opts "Go to definition")
+  map("n", "K", vim.lsp.buf.hover, opts "hover information")
+  map("n", "gi", vim.lsp.buf.implementation, opts "Go to implementation")
+  map("n", "<leader>sh", vim.lsp.buf.signature_help, opts "Show signature help")
+  map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts "Add workspace folder")
+  map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts "Remove workspace folder")
 
--- Applying default configuration to all language servers in the list
-for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup {
-        on_attach = on_attach,
-        on_init = on_init,
-        capabilities = capabilities
-    }
+  map("n", "<leader>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, opts "List workspace folders")
+
+  map("n", "<leader>D", vim.lsp.buf.type_definition, opts "Go to type definition")
+
+  map("n", "<leader>ra", function()
+    require "nvchad.lsp.renamer"()
+  end, opts "NvRenamer")
+
+  map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts "Code action")
+  map("n", "gr", vim.lsp.buf.references, opts "Show references")
+
+  -- setup signature popup
+  if conf.signature and client.server_capabilities.signatureHelpProvider then
+    require("nvchad.lsp.signature").setup(client, bufnr)
+  end
 end
 
--- Specific configurations for language servers that need additional settings
+-- disable semanticTokens
+M.on_init = function(client, _)
+  if client.supports_method "textDocument/semanticTokens" then
+    client.server_capabilities.semanticTokensProvider = nil
+  end
+end
 
--- Lua Language Server specific configuration
-lspconfig.lua_ls.setup {
-    settings = {
-        Lua = {
-            runtime = {
-                version = 'LuaJIT',  -- Set Lua version to LuaJIT
-            },
-            diagnostics = {
-                globals = {'vim'},  -- Recognize the 'vim' global
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-            },
-            telemetry = {
-                enable = false,  -- Disable telemetry to prevent sending data
-            },
-        },
+M.capabilities = vim.lsp.protocol.make_client_capabilities()
+
+M.capabilities.textDocument.completion.completionItem = {
+  documentationFormat = { "markdown", "plaintext" },
+  snippetSupport = true,
+  preselectSupport = true,
+  insertReplaceSupport = true,
+  labelDetailsSupport = true,
+  deprecatedSupport = true,
+  commitCharactersSupport = true,
+  tagSupport = { valueSet = { 1 } },
+  resolveSupport = {
+    properties = {
+      "documentation",
+      "detail",
+      "additionalTextEdits",
     },
+  },
 }
 
--- Go Language Server specific configuration
-lspconfig.gopls.setup {
-    cmd = {"gopls", "serve"},
+M.defaults = function()
+  dofile(vim.g.base46_cache .. "lsp")
+  require "nvchad.lsp"
+
+  require("lspconfig").lua_ls.setup {
+    on_attach = M.on_attach,
+    capabilities = M.capabilities,
+    on_init = M.on_init,
+
     settings = {
-        gopls = {
-            analyses = {
-                unusedparams = true,  -- Enable unused parameter analysis
-            },
-            staticcheck = true,  -- Enable staticcheck linter
+      Lua = {
+        diagnostics = {
+          globals = { "vim" },
         },
+        workspace = {
+          library = {
+            [vim.fn.expand "$VIMRUNTIME/lua"] = true,
+            [vim.fn.expand "$VIMRUNTIME/lua/vim/lsp"] = true,
+            [vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types"] = true,
+            [vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy"] = true,
+          },
+          maxPreload = 100000,
+          preloadFileSize = 10000,
+        },
+      },
     },
-}
+  }
+end
 
--- Python Language Server specific configuration
-lspconfig.pyright.setup {
-    settings = {
-        python = {
-            analysis = {
-                typeCheckingMode = "strict",  -- Enable strict type checking
-            }
-        }
-    }
-}
-
--- This setup ensures basic functionality across multiple languages with scope for fine-grained configuration.
--- For more advanced configurations, refer to the respective language server documentation.
+return M

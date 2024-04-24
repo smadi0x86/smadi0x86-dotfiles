@@ -1,77 +1,90 @@
 return {
+  -- formatting!
   {
     "stevearc/conform.nvim",
-    event = 'BufWritePre', -- uncomment for format on save
-    config = function()
-      require "configs.conform"
-    end,
-  },
-
-  -- Add your plugins here
-   {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require("nvchad.configs.lspconfig").defaults()
-      require "configs.lspconfig"
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
     opts = {
-      ensure_installed = {
-        -- Language Servers
-        "lua-language-server", -- Lua Language Server
-        "gopls", -- Language Server for Go
-        "rust-analyzer", -- Language Server for Rust
-        "terraform-ls", -- Language Server for Terraform
-        "dockerfile-language-server", -- Language Server for Dockerfile
-        "docker-compose-language-service", -- Language Server for Docker Compose
-        "yaml-language-server", -- Language Server for YAML
-        "json-lsp", -- Language Server for JSON
-        "bash-language-server", -- Language Server for Bash
-        "pylyzer", -- Language Server for Python
-
-        -- Linters
-        "gitlint", -- Git Commit Linter
-        "yamllint", -- YAML Linter
-        "tflint", -- Terraform Linter
-        "golangci-lint", -- Comprehensive Go Linter
-        "ansible-lint", -- Ansible Configurations Linter
-        "hadolint", -- Dockerfile Linter
-        "pylint", -- Python Linter
-
-        -- Debuggers
-        "delve", -- Go Debugger
-        "bash-debug-adapter", -- Bash Debugger
-
-        -- Formatters
-        "stylua", -- Lua Code Formatter
-        "golines", -- Go Code Formatter
-        "gomodifytags", -- Go Code Formatter
-        "goimports", -- Go Imports management
-        "goimports-reviser", -- Go Imports management
-        "yamlfix", -- YAML Code Formatter
-        "prettier", -- Code Formatter for various languages
-        "autoflake", -- Python Code Formatter
-
-        -- Addons
-        "gitui", -- Git UI
-        "gitleaks", -- Git Leaks Scanner
-        "yq", -- YAML Processor
-        "tfsec", -- Terraform Security Scanner
-        "helm-ls", -- Helm Charts Linter
-
-        -- Add other tools as needed
+      formatters_by_ft = {
+        lua = { "stylua" },
       },
     },
+    config = function(_, opts)
+      require("conform").setup(opts)
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "vim", "lua", "go", "c", "java", "python", "rust", "vimdoc", "yaml", "toml", "json", "dockerfile",
-         "terraform"
-      },
-    },
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = ":TSUpdate",
+    opts = function()
+      return require "nvchad.configs.treesitter"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "syntax")
+      dofile(vim.g.base46_cache .. "treesitter")
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+
+  -- lsp stuff
+  {
+    "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
+    opts = function()
+      return require "nvchad.configs.mason"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "mason")
+      require("mason").setup(opts)
+
+      -- custom nvchad cmd to install all mason binaries listed
+      vim.api.nvim_create_user_command("MasonInstallAll", function()
+        if opts.ensure_installed and #opts.ensure_installed > 0 then
+          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
+        end
+      end, {})
+
+      vim.g.mason_binaries_list = opts.ensure_installed
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
+    event = "User FilePost",
+    config = function()
+      require("nvchad.configs.lspconfig").defaults()
+    end,
+  },
+
+  -- git stuff
+  {
+    "lewis6991/gitsigns.nvim",
+    event = "User FilePost",
+    opts = function()
+      return require "nvchad.configs.gitsigns"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "git")
+      require("gitsigns").setup(opts)
+    end,
+  },
+
+ -- Additonal Plugins
+ {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "Telescope",
+    opts = function()
+      return require "nvchad.configs.telescope"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "telescope")
+      local telescope = require "telescope"
+      telescope.setup(opts)
+
+      -- load extensions
+      for _, ext in ipairs(opts.extensions_list) do
+        telescope.load_extension(ext)
+      end
+    end,
   },
 }
