@@ -68,7 +68,7 @@ return {
     end,
   },
 
- -- Additonal Plugins
+ -- Additional Plugins
  {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
