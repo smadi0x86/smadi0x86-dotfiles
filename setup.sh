@@ -20,6 +20,10 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 echo "Downloading Leapp-deb.zip, make sure to unzip and install it manually with dpkg -i..."
 wget https://asset.noovolari.com/latest/Leapp-deb.zip
 
+# Install Go Language
+echo "Installing Go Language..."
+rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
+
 # Install Terraform
 echo "Installing Terraform..."
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
