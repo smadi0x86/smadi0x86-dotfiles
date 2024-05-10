@@ -1,5 +1,38 @@
 #!/bin/bash
 
+# Update and upgrade system packages
+echo "Updating and upgrading system packages..."
+sudo apt-get update && sudo apt-get upgrade -y
+
+# Install AWS CLI
+echo "Installing AWS CLI..."
+sudo apt-get install awscli -y
+
+# Install Azure CLI
+echo "Installing Azure CLI..."
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Install Terraform
+echo "Installing Terraform..."
+sudo apt-get install -y gnupg software-properties-common curl
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+sudo apt-get update && sudo apt-get install terraform -y
+
+# Install Kubernetes CLI (kubectl)
+echo "Installing Kubernetes CLI..."
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Install Helm
+echo "Installing Helm..."
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+# Install Ansible
+echo "Installing Ansible..."
+sudo apt-get update && sudo apt-get install -y ansible
+
 # Install Node.js using nvm
 echo "Installing Node.js using nvm..."
 sudo apt update
@@ -96,4 +129,3 @@ echo "Files copied"
 echo "Don't forget to install and add the font: https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFont-SemiBold.ttf"
 
 echo "Setup complete!"
-
