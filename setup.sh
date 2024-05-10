@@ -4,9 +4,13 @@
 echo "Updating and upgrading system packages..."
 sudo apt-get update && sudo apt-get upgrade -y
 
+# Install dependencies
+echo "Installing core dependencies..."
+sudo apt-get install -y curl wget gnupg software-properties-common ca-certificates lsb-release
+
 # Install AWS CLI
 echo "Installing AWS CLI..."
-sudo apt-get install awscli -y
+sudo apt-get install -y awscli
 
 # Install Azure CLI
 echo "Installing Azure CLI..."
@@ -14,16 +18,15 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 # Install Terraform
 echo "Installing Terraform..."
-sudo apt-get install -y gnupg software-properties-common curl
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-sudo apt-get update && sudo apt-get install terraform -y
+echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt-get update && sudo apt-get install -y terraform
 
 # Install Kubernetes CLI (kubectl)
 echo "Installing Kubernetes CLI..."
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/
 
 # Install Helm
 echo "Installing Helm..."
@@ -31,12 +34,12 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 
 # Install Ansible
 echo "Installing Ansible..."
-sudo apt-get update && sudo apt-get install -y ansible
+sudo apt-get install -y ansible
 
 # Install Jenkins
 echo "Installing Jenkins..."
-wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
 sudo apt-get update && sudo apt-get install -y jenkins
 
 # Install Prometheus
@@ -45,45 +48,29 @@ sudo apt-get install -y prometheus
 
 # Install Grafana
 echo "Installing Grafana..."
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
 sudo apt-get update && sudo apt-get install -y grafana
 
 # Install SonarQube
 echo "Installing SonarQube..."
 sudo apt-get install -y openjdk-11-jre
-sudo wget -qO- https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.2.46101.zip | bsdtar -xvf- -C /opt
+wget -qO- https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.2.46101.zip | sudo bsdtar -xvf- -C /opt
 sudo ln -s /opt/sonarqube-8.9.2.46101 /opt/sonarqube
-# Configure SonarQube (you may need to customize these steps)
 echo "SonarQube installed. Remember to configure /opt/sonarqube/conf/sonar.properties as needed."
 
 # Install Docker
 echo "Installing Docker..."
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release and echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-echo "Docker Installed successfully!"
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+echo "Docker installed successfully!"
 
 # Install Node.js using nvm
 echo "Installing Node.js using nvm..."
-sudo apt update
-sudo apt install -y curl
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm install --lts
 echo "Node.js installed using nvm"
 
@@ -122,12 +109,12 @@ echo "Snap setup complete"
 echo "Installing Fish shell and Oh My Fish..."
 sudo apt install -y fish git
 curl -L https://get.oh-my.fish | fish
-fish
 echo "Fish shell and Oh My Fish installed"
 
 # Disable Fish greeting
 echo "Disabling Fish greeting..."
-printf "function fish_greeting\nend" > ~/.config/fish/functions/fish_greeting.fish
+mkdir -p ~/.config/fish/functions
+echo "function fish_greeting\nend" > ~/.config/fish/functions/fish_greeting.fish
 echo "Fish greeting disabled"
 
 # Set Fish as default shell
@@ -143,11 +130,7 @@ echo "Fisher and plugins installed"
 
 # Create and configure nvm.fish for Fish shell
 echo "Creating and configuring nvm.fish..."
-sudo nano ~/.config/fish/functions/nvm.fish
-# Add the following code to the file nvm.fish
-echo "function nvm" > ~/.config/fish/functions/nvm.fish
-echo "    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv" >> ~/.config/fish/functions/nvm.fish
-echo "end" >> ~/.config/fish/functions/nvm.fish
+echo "function nvm\n    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv\nend" | tee ~/.config/fish/functions/nvm.fish
 echo "nvm.fish created and configured"
 
 # Install Starship
@@ -157,8 +140,6 @@ echo "Starship installed"
 
 # Configure Fish to use Starship
 echo "Configuring Fish with Starship..."
-echo "sh" >> ~/.config/fish/config.fish
-echo "# ~/.config/fish/config.fish" >> ~/.config/fish/config.fish
 echo "starship init fish | source" >> ~/.config/fish/config.fish
 echo "Fish configured with Starship"
 
