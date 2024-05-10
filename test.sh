@@ -29,16 +29,14 @@ echo "Cloning configuration repository..."
 git clone https://github.com/smadi0x86/smadi0x86-DebianSysConfig.git
 cd smadi0x86-DebianSysConfig
 
-# Creating config directories
+# Creating config directories (not needed if we are copying whole directories)
 echo "Creating configuration directories..."
-mkdir -p ~/.config/fish
-mkdir -p ~/.config/nvim
-mkdir -p ~/.config/starship
+mkdir -p ~/.config
 
-# Copy config files
-echo "Copying configuration files..."
-cp .config/fish/config.fish ~/.config/fish/config.fish
-cp .config/nvim/init.lua ~/.config/nvim/init.lua
-cp .config/starship/starship.toml ~/.config/starship/starship.toml
+# Copy entire directories
+echo "Copying configuration directories..."
+cp -r .config/fish ~/.config/fish
+cp -r .config/nvim ~/.config/nvim
+cp -r .config/starship ~/.config/starship
 
 echo "Setup complete. Please restart your terminal for all changes to take effect."
