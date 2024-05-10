@@ -16,6 +16,10 @@ sudo apt-get install -y awscli
 echo "Installing Azure CLI..."
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
+# Install Leapp
+echo "Downloading Leapp-deb.zip, make sure to unzip and install it manually with dpkg -i..."
+wget https://asset.noovolari.com/latest/Leapp-deb.zip
+
 # Install Terraform
 echo "Installing Terraform..."
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
