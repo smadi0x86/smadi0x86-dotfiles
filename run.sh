@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define repository URL and clone directory
-REPO_URL="https://github.com/smadi0x86/DebianSysConfig.git"
+REPO_URL="https://github.com/smadi0x86/smadi0x86-DebianSysConfig.git"
 CLONE_DIR="$HOME/DebianSysConfig"
 
 echo "Cloning the repository..."
