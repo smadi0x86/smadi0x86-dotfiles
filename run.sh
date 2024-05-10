@@ -5,7 +5,7 @@ REPO_URL="https://github.com/smadi0x86/smadi0x86-DebianSysConfig.git"
 CLONE_DIR="$HOME/DebianSysConfig"
 
 echo "Cloning the repository..."
-git clone $REPO_URL $CLONE_DIR
+git clone $REPO_URL
 cd $CLONE_DIR
 
 # Ensure setup.sh is executable and run it
