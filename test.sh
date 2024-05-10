@@ -37,6 +37,6 @@ mkdir -p ~/.config
 echo "Copying configuration directories..."
 cp -r .config/fish ~/.config/fish
 cp -r .config/nvim ~/.config/nvim
-cp -r .config/starship ~/.config/starship
+cp -r .config/starship ~/.config/starship.toml
 
 echo "Setup complete. Please restart your terminal for all changes to take effect."
