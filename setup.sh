@@ -33,6 +33,38 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 echo "Installing Ansible..."
 sudo apt-get update && sudo apt-get install -y ansible
 
+# Install Jenkins
+echo "Installing Jenkins..."
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update && sudo apt-get install -y jenkins
+
+# Install Prometheus
+echo "Installing Prometheus..."
+sudo apt-get install -y prometheus
+
+# Install Grafana
+echo "Installing Grafana..."
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
+wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+sudo apt-get update && sudo apt-get install -y grafana
+
+# Install SonarQube
+echo "Installing SonarQube..."
+sudo apt-get install -y openjdk-11-jre
+sudo wget -qO- https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.2.46101.zip | bsdtar -xvf- -C /opt
+sudo ln -s /opt/sonarqube-8.9.2.46101 /opt/sonarqube
+# Configure SonarQube (you may need to customize these steps)
+echo "SonarQube installed. Remember to configure /opt/sonarqube/conf/sonar.properties as needed."
+
+# Install Docker
+echo "Installing Docker..."
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update && sudo apt-get install -y docker-ce
+
 # Install Node.js using nvm
 echo "Installing Node.js using nvm..."
 sudo apt update
