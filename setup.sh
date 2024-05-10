@@ -61,50 +61,9 @@ sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.i
 # Install tmux
 echo "Installing tmux..."
 sudo apt install tmux -y
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
 cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
-
-# Install Fish shell
-echo "Installing Fish shell..."
-sudo apt install fish -y
-curl -L https://get.oh-my.fish | fish
-fish -c "omf install bobthefish"
-
-# Set Fish as default shell
-echo "Setting Fish as default shell..."
-chsh -s /usr/bin/fish
-
-# Install Neovim
-echo "Installing Neovim..."
-sudo snap install nvim --classic
-
-# Install Python and pip for Neovim plugins
-echo "Installing Python and pip..."
-sudo apt install python3 python3-pip -y
-pip3 install neovim
-
-# Copy Neovim configuration
-mkdir -p ~/.config/nvim
-cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
-
-# Install Node.js for Neovim plugins
-echo "Installing Node.js..."
-curl -sL install-node.now.sh/lts | bash
-
-# Install and configure tmux
-echo "Configuring tmux..."
-cp ~/smadi0x86-setup/.tmux.conf ~/
-
-# Copy Neovim and tmux configuration files from a predefined directory
-echo "Copying Neovim and tmux configuration files..."
-cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
-cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
-
-# Configure tmux
-echo "Configuring tmux..."
-sudo apt install -y tmux
-cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 tmux start-server
 tmux new-session -d
 ~/.tmux/plugins/tpm/bin/install_plugins
@@ -112,28 +71,16 @@ tmux kill-server
 
 # Install Fish shell
 echo "Installing Fish shell..."
-sudo apt install -y fish
+sudo apt install fish -y
 curl -L https://get.oh-my.fish | fish
-
-# Make Fish the default shell
-echo "Making Fish the default shell..."
+fish -c "omf install bobthefish"
 chsh -s /usr/bin/fish
 
 # Install Fisher and plugins for Fish
 echo "Installing Fisher and plugins for Fish..."
 fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
 fish -c "fisher install edc/bass"
-
-# Configure Fish shell to disable the greeting
-echo "Configuring Fish shell..."
 echo "set fish_greeting" | sudo tee -a ~/.config/fish/config.fish
-
-# Set up NVM with Fish
-echo "Setting up NVM with Fish..."
-mkdir -p ~/.config/fish/functions
-echo "function nvm" > ~/.config/fish/functions/nvm.fish
-echo "  bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv" >> ~/.config/fish/functions/nvm.fish
-echo "end" >> ~/.config/fish/functions/nvm.fish
 
 # Install Starship prompt
 echo "Installing Starship prompt..."
@@ -144,21 +91,24 @@ echo 'eval "$(starship init fish)"' | sudo tee -a ~/.config/fish/config.fish
 echo "Installing Neovim..."
 sudo snap install nvim --classic
 
-# Create Neovim config directory
+# Prepare Neovim environment
+echo "Setting up Neovim environment..."
 mkdir -p ~/.config/nvim
-
-# Copy Neovim initial configuration file
-echo "Copying initial Neovim configuration..."
-cp ~/smadi0x86-setup/init.vim ~/.config/nvim/ 
-
-# Install Lazy.nvim
-echo "Installing Lazy.nvim..."
+cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/pack/packer/start/lazy.nvim \
        --create-dirs https://github.com/folke/lazy.nvim'
 
-# Install Mason for Neovim
-echo "Installing Mason and setting up Neovim plugins..."
+# Install Python and pip for Neovim plugins
+echo "Installing Python and pip..."
+sudo apt install python3 python3-pip -y
+pip3 install neovim
+
+# Install Node.js for Neovim plugins
+echo "Installing Node.js..."
+curl -sL install-node.now.sh/lts | bash
+
+# Install and configure Neovim plugins
+echo "Configuring Neovim plugins..."
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'LazySetup' -c 'MasonInstallAll' -c 'qa'
 
-# Finalize
 echo "Setup complete! Please restart your terminal or log out and log back in for all changes to take effect, especially for the default shell change."
