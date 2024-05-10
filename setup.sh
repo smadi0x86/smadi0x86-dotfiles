@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Define exit on error
+set -e
+
 # Update and upgrade system packages
 echo "Updating and upgrading system packages..."
 sudo apt-get update && sudo apt-get upgrade -y
@@ -69,12 +72,12 @@ tmux new-session -d
 ~/.tmux/plugins/tpm/bin/install_plugins
 tmux kill-server
 
-# Install Fish shell
-echo "Installing Fish shell..."
+# Install Fish shell and set as default
+echo "Installing Fish shell and setting as default..."
 sudo apt install fish -y
 curl -L https://get.oh-my.fish | fish
 fish -c "omf install bobthefish"
-chsh -s /usr/bin/fish
+chsh -s /usr/bin/fish $(whoami)
 
 # Install Fisher and plugins for Fish
 echo "Installing Fisher and plugins for Fish..."
@@ -82,17 +85,17 @@ fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/
 fish -c "fisher install edc/bass"
 echo "set fish_greeting" | sudo tee -a ~/.config/fish/config.fish
 
-# Install Starship prompt
-echo "Installing Starship prompt..."
-curl -fsSL https://starship.rs/install.sh | sh
+# Install and configure Starship
+echo "Installing and configuring Starship..."
+curl -fsSL https://starship.rs/install.sh | bash
 echo 'eval "$(starship init fish)"' | sudo tee -a ~/.config/fish/config.fish
 
 # Install Neovim
 echo "Installing Neovim..."
 sudo snap install nvim --classic
 
-# Prepare Neovim environment
-echo "Setting up Neovim environment..."
+# Configure Neovim
+echo "Configuring Neovim..."
 mkdir -p ~/.config/nvim
 cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/pack/packer/start/lazy.nvim \
@@ -107,8 +110,8 @@ pip3 install neovim
 echo "Installing Node.js..."
 curl -sL install-node.now.sh/lts | bash
 
-# Install and configure Neovim plugins
-echo "Configuring Neovim plugins..."
+# Run Neovim to install plugins
+echo "Automatically configuring Neovim plugins..."
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'LazySetup' -c 'MasonInstallAll' -c 'qa'
 
-echo "Setup complete! Please restart your terminal or log out and log back in for all changes to take effect, especially for the default shell change."
+echo "Setup complete! Please restart your terminal or log out and log back in for all changes to take effect."
