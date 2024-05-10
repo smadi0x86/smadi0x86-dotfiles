@@ -5,14 +5,5 @@ This repository contains scripts and configurations for setting up a Debian-base
 ## Setup Instructions
 
 ```bash
-git clone https://github.com/smadi0x86/smadi0x86-DebianSysConfig.git
-```
-
-```bash
-cd smadi0x86-DebianSysConfig
-```
-
-```bash
-chmod +x setup.sh
-./setup.sh
+curl -sL https://raw.githubusercontent.com/smadi0x86/smadi0x86-DebianSysConfig/main/run.sh | bash
 ```
