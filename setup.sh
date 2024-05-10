@@ -4,6 +4,10 @@
 echo "Updating and upgrading system packages..."
 sudo apt-get update && sudo apt-get upgrade -y
 
+# Install common dependencies
+echo "Installing common dependencies..."
+sudo apt-get install -y curl wget gnupg software-properties-common apt-transport-https ca-certificates
+
 # Install AWS CLI
 echo "Installing AWS CLI..."
 sudo apt-get install awscli -y
@@ -14,7 +18,6 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 # Install Terraform
 echo "Installing Terraform..."
-sudo apt-get install -y gnupg software-properties-common curl
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 sudo apt-get update && sudo apt-get install terraform -y
@@ -31,146 +34,128 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 
 # Install Ansible
 echo "Installing Ansible..."
-sudo apt-get update && sudo apt-get install -y ansible
+sudo apt-get install ansible -y
 
 # Install Jenkins
 echo "Installing Jenkins..."
 wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt-get update && sudo apt-get install -y jenkins
+echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
+sudo apt-get update && sudo apt-get install jenkins -y
 
 # Install Prometheus
 echo "Installing Prometheus..."
-sudo apt-get install -y prometheus
+sudo apt-get install prometheus -y
 
 # Install Grafana
 echo "Installing Grafana..."
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
-sudo apt-get update && sudo apt-get install -y grafana
-
-# Install SonarQube
-echo "Installing SonarQube..."
-sudo apt-get install -y openjdk-11-jre
-sudo wget -qO- https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.2.46101.zip | bsdtar -xvf- -C /opt
-sudo ln -s /opt/sonarqube-8.9.2.46101 /opt/sonarqube
-# Configure SonarQube (you may need to customize these steps)
-echo "SonarQube installed. Remember to configure /opt/sonarqube/conf/sonar.properties as needed."
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+sudo apt-get update && sudo apt-get install grafana -y
 
 # Install Docker
 echo "Installing Docker..."
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-echo "Docker Installed successfully!"
-
-# Install Node.js using nvm
-echo "Installing Node.js using nvm..."
-sudo apt update
-sudo apt install -y curl
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-echo "Node.js installed using nvm"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
 # Install tmux
 echo "Installing tmux..."
-sudo apt install -y tmux
-echo "tmux installed"
+sudo apt install tmux -y
+cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
+cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
 
-# Install GDB
-echo "Installing GDB (GNU Debugger)..."
-sudo apt install -y gdb
-echo "GDB installed"
-
-# Install GDB Dashboard
-echo "Installing GDB Dashboard..."
-wget -P ~ https://github.com/cyrus-and/gdb-dashboard/raw/master/.gdbinit
-echo "GDB Dashboard installed"
-
-# Install Python and pip
-echo "Installing Python and pip..."
-sudo apt install -y python3 python3-pip
-echo "Python and pip installed"
-
-# Install Pygments
-echo "Installing Pygments..."
-pip install pygments
-echo "Pygments installed"
-
-# Set up Snap for Neovim
-echo "Setting up Snap..."
-sudo apt install -y snapd
-sudo snap install nvim --classic
-echo "Snap setup complete"
-
-# Install Fish shell and Oh My Fish
-echo "Installing Fish shell and Oh My Fish..."
-sudo apt install -y fish git
+# Install Fish shell
+echo "Installing Fish shell..."
+sudo apt install fish -y
 curl -L https://get.oh-my.fish | fish
-fish
-echo "Fish shell and Oh My Fish installed"
-
-# Disable Fish greeting
-echo "Disabling Fish greeting..."
-printf "function fish_greeting\nend" > ~/.config/fish/functions/fish_greeting.fish
-echo "Fish greeting disabled"
+fish -c "omf install bobthefish"
 
 # Set Fish as default shell
 echo "Setting Fish as default shell..."
-sudo chsh -s /usr/bin/fish $(whoami)
-echo "Fish set as default shell"
+chsh -s /usr/bin/fish
 
-# Install Fisher and plugins for Fish shell
-echo "Installing Fisher and plugins for Fish shell..."
-curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
-fisher install edc/bass
-echo "Fisher and plugins installed"
+# Install Neovim
+echo "Installing Neovim..."
+sudo snap install nvim --classic
 
-# Create and configure nvm.fish for Fish shell
-echo "Creating and configuring nvm.fish..."
-sudo nano ~/.config/fish/functions/nvm.fish
-# Add the following code to the file nvm.fish
-echo "function nvm" > ~/.config/fish/functions/nvm.fish
-echo "    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv" >> ~/.config/fish/functions/nvm.fish
-echo "end" >> ~/.config/fish/functions/nvm.fish
-echo "nvm.fish created and configured"
+# Install Python and pip for Neovim plugins
+echo "Installing Python and pip..."
+sudo apt install python3 python3-pip -y
+pip3 install neovim
 
-# Install Starship
-echo "Installing Starship..."
-curl -fsSL https://starship.rs/install.sh | sh
-echo "Starship installed"
+# Copy Neovim configuration
+mkdir -p ~/.config/nvim
+cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
 
-# Configure Fish to use Starship
-echo "Configuring Fish with Starship..."
-echo "sh" >> ~/.config/fish/config.fish
-echo "# ~/.config/fish/config.fish" >> ~/.config/fish/config.fish
-echo "starship init fish | source" >> ~/.config/fish/config.fish
-echo "Fish configured with Starship"
+# Install Node.js for Neovim plugins
+echo "Installing Node.js..."
+curl -sL install-node.now.sh/lts | bash
 
-# Copy files from smadi0x86-setup to appropriate directories
-echo "Copying files to appropriate directories..."
-cp ~/smadi0x86-setup/.bashrc ~/
-cp ~/smadi0x86-setup/.gitconfig ~/
+# Install and configure tmux
+echo "Configuring tmux..."
 cp ~/smadi0x86-setup/.tmux.conf ~/
-cp ~/smadi0x86-setup/.config/starship.toml ~/.config/
-cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
-echo "Files copied"
 
-echo "Don't forget to install and add the font: https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFont-SemiBold.ttf"
+# Copy Neovim and tmux configuration files from a predefined directory
+echo "Copying Neovim and tmux configuration files..."
+cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
+cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
 
-echo "Setup complete!"
+# Configure tmux
+echo "Configuring tmux..."
+sudo apt install -y tmux
+cp ~/smadi0x86-setup/.tmux.conf ~/.tmux.conf
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux start-server
+tmux new-session -d
+~/.tmux/plugins/tpm/bin/install_plugins
+tmux kill-server
+
+# Install Fish shell
+echo "Installing Fish shell..."
+sudo apt install -y fish
+curl -L https://get.oh-my.fish | fish
+
+# Make Fish the default shell
+echo "Making Fish the default shell..."
+chsh -s /usr/bin/fish
+
+# Install Fisher and plugins for Fish
+echo "Installing Fisher and plugins for Fish..."
+fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
+fish -c "fisher install edc/bass"
+
+# Configure Fish shell to disable the greeting
+echo "Configuring Fish shell..."
+echo "set fish_greeting" | sudo tee -a ~/.config/fish/config.fish
+
+# Set up NVM with Fish
+echo "Setting up NVM with Fish..."
+mkdir -p ~/.config/fish/functions
+echo "function nvm" > ~/.config/fish/functions/nvm.fish
+echo "  bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv" >> ~/.config/fish/functions/nvm.fish
+echo "end" >> ~/.config/fish/functions/nvm.fish
+
+# Install Starship prompt
+echo "Installing Starship prompt..."
+curl -fsSL https://starship.rs/install.sh | sh
+echo 'eval "$(starship init fish)"' | sudo tee -a ~/.config/fish/config.fish
+
+# Install Neovim
+echo "Installing Neovim..."
+sudo snap install nvim --classic
+
+# Set up Neovim with initial plugins and configuration
+echo "Setting up Neovim..."
+mkdir -p ~/.config/nvim
+cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
+
+# Install vim-plug for Neovim
+echo "Installing vim-plug for Neovim..."
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# Install plugins via vim-plug
+nvim --headless +PlugInstall +qall
+
+# Finalize
+echo "Setup complete! Please restart your terminal or log out and log back in for all changes to take effect, especially for the default shell change."
