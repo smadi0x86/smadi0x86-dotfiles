@@ -14,3 +14,14 @@ if status is-interactive
     set -gx PATH /usr/bin /bin $PATH /usr/local/go/bin
 end
 
+function clear_logout --on-event fish_exit
+    if status is-login
+        # Clear fish history
+        history clear
+        # Clear screen
+        clear
+        # Remove cache directory
+        rm -rf ~/.cache
+    end
+end
+
