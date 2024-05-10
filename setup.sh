@@ -70,7 +70,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 # Add the repository to Apt sources:
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  $(. /etc/os-release and echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 
@@ -137,7 +137,7 @@ echo "Fish set as default shell"
 
 # Install Fisher and plugins for Fish shell
 echo "Installing Fisher and plugins for Fish shell..."
-curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+curl -sL https://git.io/fisher | source and fisher install jorgebucaran/fisher
 fisher install edc/bass
 echo "Fisher and plugins installed"
 
