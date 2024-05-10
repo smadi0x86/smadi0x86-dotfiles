@@ -144,18 +144,21 @@ echo 'eval "$(starship init fish)"' | sudo tee -a ~/.config/fish/config.fish
 echo "Installing Neovim..."
 sudo snap install nvim --classic
 
-# Set up Neovim with initial plugins and configuration
-echo "Setting up Neovim..."
+# Create Neovim config directory
 mkdir -p ~/.config/nvim
-cp ~/smadi0x86-setup/init.vim ~/.config/nvim/
 
-# Install vim-plug for Neovim
-echo "Installing vim-plug for Neovim..."
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+# Copy Neovim initial configuration file
+echo "Copying initial Neovim configuration..."
+cp ~/smadi0x86-setup/init.vim ~/.config/nvim/ 
 
-# Install plugins via vim-plug
-nvim --headless +PlugInstall +qall
+# Install Lazy.nvim
+echo "Installing Lazy.nvim..."
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/pack/packer/start/lazy.nvim \
+       --create-dirs https://github.com/folke/lazy.nvim'
+
+# Install Mason for Neovim
+echo "Installing Mason and setting up Neovim plugins..."
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'LazySetup' -c 'MasonInstallAll' -c 'qa'
 
 # Finalize
 echo "Setup complete! Please restart your terminal or log out and log back in for all changes to take effect, especially for the default shell change."
