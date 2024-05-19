@@ -1,2 +1,2 @@
+![image](https://github.com/smadi0x86/smadi0x86-dotfiles/assets/75253629/3bd0a21f-74d5-4df1-84a8-8518f683be00)
 # smadi0x86 Dotfiles
-https://github.com/smadi0x86/Gh0stLdr/assets/75253629/439ed5c4-a6ba-4562-b50e-d35ff6e4500f
