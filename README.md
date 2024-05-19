@@ -1,5 +1,5 @@
 # smadi0x86 Dotfiles
-This repository contains scripts and configurations for setting up a Debian-based system.
+This repository contains scripts and configurations for setting up either arch or debian systems.
 
 ## Setup Instructions
 
