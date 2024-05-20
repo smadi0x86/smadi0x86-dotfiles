@@ -219,7 +219,7 @@ gaps outer 5
 exec_always autotiling
 
 # Polybar
-exec_always ~/.config/polybar/launch.sh
+exec_always ~/.config/polybar/launch.sh --forest
 
 # Picom (Compton) for smooth windows transitions
 exec_always picom --config ~/.config/picom/picom.conf --vsync
