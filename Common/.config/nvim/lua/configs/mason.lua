@@ -11,6 +11,7 @@ local options = {
         "json-lsp", -- Language Server for JSON
         "bash-language-server", -- Language Server for Bash
         "pylyzer", -- Language Server for Python
+        "arduino-language-server", -- Language Server for Arduino
 
         -- Linters
         "gitlint", -- Git Commit Linter

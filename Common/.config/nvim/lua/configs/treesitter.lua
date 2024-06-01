@@ -1,7 +1,7 @@
 local options = {
   ensure_installed = {
         "vim", "lua", "go", "c", "java", "python", "rust", "vimdoc", "yaml", "toml", "json", "dockerfile",
-         "terraform"
+         "terraform", "c", "cpp"
       },
 
   highlight = {

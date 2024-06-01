@@ -1,4 +1,8 @@
 return {
+  -- Misc
+  { "anurag3301/nvim-platformio.lua"},
+
+  { "lukas-reineke/indent-blankline.nvim", enabled = false },
   -- formatting!
   {
     "stevearc/conform.nvim",

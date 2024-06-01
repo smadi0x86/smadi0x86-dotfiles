@@ -1,13 +1,11 @@
 require "nvchad.mappings"
 
-
 local map = vim.keymap.set
 
 -- General
 map("n", "<leader>fm", function()
   require("conform").format { lsp_fallback = true }
 end, { desc = "Format Files" })
-
 
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "General Clear highlights" })
 map("n", "<C-s>", "<cmd>w<CR>", { desc = "File Save" })
@@ -17,9 +15,10 @@ map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "Toggle Line number" })
 map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "Toggle Relative number" })
 map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "Toggle NvCheatsheet" })
 
-map("n", "<leader>fm", function()
-  require("conform").format { lsp_fallback = true }
-end, { desc = "Format Files" })
+-- PlatformIO
+map("n", "<leader>pb", "<cmd>!pio run<CR>", { desc = "PlatformIO Build" })
+map("n", "<leader>pu", "<cmd>!pio run --target upload<CR>", { desc = "PlatformIO Upload" })
+map("n", "<leader>pm", "<cmd>!pio device monitor<CR>", { desc = "PlatformIO Monitor" })
 
 -- nvimtree
 map("n", "<C-d>", "<cmd>NvimTreeToggle<CR>", { desc = "Nvimtree Toggle window" })
