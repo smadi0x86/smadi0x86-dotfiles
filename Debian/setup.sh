@@ -114,32 +114,32 @@ sudo snap install nvim --classic
 echo "Snap setup complete"
 
 # Install Fish shell and Oh My Fish
-echo "Installing Fish shell and Oh My Fish..."
-sudo apt install -y fish git
-curl -L https://get.oh-my.fish | fish
-echo "Fish shell and Oh My Fish installed"
+#echo "Installing Fish shell and Oh My Fish..."
+#sudo apt install -y fish git
+#curl -L https://get.oh-my.fish | fish
+#echo "Fish shell and Oh My Fish installed"
 
 # Disable Fish greeting
-echo "Disabling Fish greeting..."
-mkdir -p ~/.config/fish/functions
-echo "function fish_greeting\nend" > ~/.config/fish/functions/fish_greeting.fish
-echo "Fish greeting disabled"
+#echo "Disabling Fish greeting..."
+#mkdir -p ~/.config/fish/functions
+#echo "function fish_greeting\nend" > ~/.config/fish/functions/fish_greeting.fish
+#echo "Fish greeting disabled"
 
 # Set Fish as default shell
-echo "Setting Fish as default shell..."
-sudo chsh -s /usr/bin/fish $(whoami)
-echo "Fish set as default shell"
+#echo "Setting Fish as default shell..."
+#sudo chsh -s /usr/bin/fish $(whoami)
+#echo "Fish set as default shell"
 
 # Install Fisher and plugins for Fish shell
-echo "Installing Fisher and plugins for Fish shell..."
-curl -sL https://git.io/fisher | source and fisher install jorgebucaran/fisher
-fisher install edc/bass
-echo "Fisher and plugins installed"
+#echo "Installing Fisher and plugins for Fish shell..."
+#curl -sL https://git.io/fisher | source and fisher install jorgebucaran/fisher
+#fisher install edc/bass
+#echo "Fisher and plugins installed"
 
 # Create and configure nvm.fish for Fish shell
-echo "Creating and configuring nvm.fish..."
-echo "function nvm\n    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv\nend" | tee ~/.config/fish/functions/nvm.fish
-echo "nvm.fish created and configured"
+#echo "Creating and configuring nvm.fish..."
+#echo "function nvm\n    bass source ~/.nvm/nvm.sh --no-use ';' nvm \$argv\nend" | tee ~/.config/fish/functions/nvm.fish
+#echo "nvm.fish created and configured"
 
 # Install Starship
 echo "Installing Starship..."
@@ -147,18 +147,18 @@ curl -fsSL https://starship.rs/install.sh | sh
 echo "Starship installed"
 
 # Configure Fish to use Starship
-echo "Configuring Fish with Starship..."
-echo "starship init fish | source" >> ~/.config/fish/config.fish
-echo "Fish configured with Starship"
+#echo "Configuring Fish with Starship..."
+#echo "starship init fish | source" >> ~/.config/fish/config.fish
+#echo "Fish configured with Starship"
 
 # Copy files from smadi0x86-setup to appropriate directories
-echo "Copying files to appropriate directories..."
-cp ~/smadi0x86-setup/.bashrc ~/
-cp ~/smadi0x86-setup/.gitconfig ~/
-cp ~/smadi0x86-setup/.tmux.conf ~/
-cp ~/smadi0x86-setup/.config/starship.toml ~/.config/
-cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
-echo "Files copied"
+#echo "Copying files to appropriate directories..."
+#cp ~/smadi0x86-setup/.bashrc ~/
+#cp ~/smadi0x86-setup/.gitconfig ~/
+#cp ~/smadi0x86-setup/.tmux.conf ~/
+#cp ~/smadi0x86-setup/.config/starship.toml ~/.config/
+#cp -r ~/smadi0x86-setup/.tmux/plugins ~/.tmux/
+#echo "Files copied"
 
 echo "Don't forget to install and add the font: https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFont-SemiBold.ttf"
 
